@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const API_KEY = process.env.API_KEY;
 
@@ -12,14 +12,14 @@ export const generateAssistantContent = async (prompt: string, context: string =
   const model = "gemini-3-flash-preview";
 
   const systemInstruction = `
-    Anda adalah AI Asisten untuk Sistem Informasi Organisasi Warga (SI-WARGA).
-    Tugas Anda adalah membantu admin menyusun konten yang rapi, jelas, sopan, dan informatif dalam Bahasa Indonesia yang formal.
+    Anda adalah AI Asisten untuk Sistem Informasi Desa (SI-DESA).
+    Tugas Anda adalah membantu perangkat desa menyusun konten resmi, surat edaran, narasi pembangunan, dan berita desa.
+    Gunakan Bahasa Indonesia formal (EYD), sopan, dan berwibawa sebagai representasi pemerintah desa.
     Kontek sistem: ${context}
-    Aturan:
-    1. Gunakan Bahasa Indonesia yang baku dan sopan.
-    2. Jika diminta menulis sejarah/profil, buat narasi yang netral dan faktual.
-    3. Jika diminta membuat artikel berita, buat judul yang menarik dan isi yang jelas (5W+1H).
-    4. Selalu prioritaskan transparansi dan kedekatan dengan warga.
+    Aturan Khusus:
+    1. Hindari penggunaan kata ganti "aku/kamu", gunakan "kami/Pemerintah Desa" dan "Warga/Masyarakat".
+    2. Jika menulis berita pembangunan, sertakan dampak positif bagi kesejahteraan desa.
+    3. Pastikan format tulisan rapi dan mudah dibaca oleh warga lintas usia.
   `;
 
   try {
@@ -28,7 +28,7 @@ export const generateAssistantContent = async (prompt: string, context: string =
       contents: prompt,
       config: {
         systemInstruction,
-        temperature: 0.7,
+        temperature: 0.6,
       },
     });
 
@@ -37,9 +37,4 @@ export const generateAssistantContent = async (prompt: string, context: string =
     console.error("Gemini API Error:", error);
     throw error;
   }
-};
-
-export const improveDraft = async (draft: string) => {
-  const prompt = `Perbaiki draf konten berikut agar lebih profesional, rapi, dan menggunakan Bahasa Indonesia yang formal: "${draft}"`;
-  return generateAssistantContent(prompt, "Editor Konten");
 };

@@ -74,30 +74,30 @@ const AppLayout: React.FC<{ isAuthenticated: boolean; setIsAuthenticated: (val: 
 };
 
 const PublicNavigation: React.FC = () => (
-  <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/90 backdrop-blur-md">
-    <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <Link to="/" className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-200">
-          <span className="material-symbols-outlined">corporate_fare</span>
+  <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md">
+    <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <Link to="/" className="flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-700 text-white shadow-xl shadow-indigo-200">
+          <span className="material-symbols-outlined text-3xl">account_balance</span>
         </div>
         <div className="flex flex-col">
-          <h1 className="text-lg font-bold leading-none text-slate-900">SI-WARGA</h1>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Harmoni Village</span>
+          <h1 className="text-xl font-black leading-none text-slate-900 tracking-tight">SI-DESA</h1>
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">Pemerintah Desa Harmoni</span>
         </div>
       </Link>
-      <nav className="hidden md:flex items-center gap-8">
-        <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-blue-600">Beranda</Link>
-        <Link to="/kepengurusan" className="text-sm font-semibold text-slate-600 hover:text-blue-600">Kepengurusan</Link>
-        <Link to="/kegiatan" className="text-sm font-semibold text-slate-600 hover:text-blue-600">Kegiatan</Link>
-        <Link to="/data-warga" className="text-sm font-semibold text-slate-600 hover:text-blue-600">Data Warga</Link>
-        <Link to="/keuangan" className="text-sm font-semibold text-slate-600 hover:text-blue-600">Keuangan</Link>
+      <nav className="hidden lg:flex items-center gap-10">
+        <Link to="/" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Beranda</Link>
+        <Link to="/kepengurusan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Perangkat Desa</Link>
+        <Link to="/kegiatan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Kabar Desa</Link>
+        <Link to="/data-warga" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Statistik</Link>
+        <Link to="/keuangan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">APBD Desa</Link>
       </nav>
       <div className="flex items-center gap-4">
         <Link 
           to="/admin" 
-          className="rounded-full bg-slate-900 px-6 py-2 text-sm font-bold text-white shadow-md hover:bg-slate-800 transition-all active:scale-95"
+          className="rounded-2xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white shadow-lg hover:bg-indigo-900 transition-all active:scale-95"
         >
-          Admin
+          Portal Internal
         </Link>
       </div>
     </div>
@@ -105,38 +105,47 @@ const PublicNavigation: React.FC = () => (
 );
 
 const PublicFooter: React.FC = () => (
-  <footer className="bg-slate-900 text-slate-300 py-16">
+  <footer className="bg-slate-900 text-slate-300 py-20">
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-        <div className="col-span-1 md:col-span-2 space-y-6">
-          <div className="flex items-center gap-2 text-white">
-            <span className="material-symbols-outlined text-blue-500 text-3xl">corporate_fare</span>
-            <span className="text-2xl font-bold">SI-WARGA</span>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
+        <div className="col-span-1 md:col-span-2 space-y-8">
+          <div className="flex items-center gap-3 text-white">
+            <span className="material-symbols-outlined text-indigo-500 text-4xl">account_balance</span>
+            <span className="text-3xl font-black tracking-tighter">SI-DESA</span>
           </div>
-          <p className="text-slate-400 max-w-md leading-relaxed">
-            Sistem informasi resmi yang didedikasikan untuk transparansi, efisiensi administrasi, dan pemberdayaan komunitas di wilayah Desa Harmoni.
+          <p className="text-slate-400 max-w-md text-lg leading-relaxed">
+            Pusat informasi dan layanan digital terpadu Pemerintah Desa Harmoni. Mewujudkan tata kelola desa yang transparan, akuntabel, dan berbasis teknologi.
           </p>
+          <div className="flex gap-4">
+            <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-600 transition-colors cursor-pointer">
+              <span className="material-symbols-outlined text-sm">facebook</span>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-400 transition-colors cursor-pointer">
+              <span className="material-symbols-outlined text-sm">alternate_email</span>
+            </div>
+          </div>
         </div>
         <div>
-          <h3 className="text-white font-bold mb-4 uppercase text-xs tracking-widest">Akses Cepat</h3>
-          <ul className="space-y-3 text-sm">
-            <li><Link to="/kepengurusan" className="hover:text-blue-400 transition-colors">Struktur Organisasi</Link></li>
-            <li><Link to="/kegiatan" className="hover:text-blue-400 transition-colors">Agenda Kegiatan</Link></li>
-            <li><Link to="/keuangan" className="hover:text-blue-400 transition-colors">Transparansi Dana</Link></li>
-            <li><Link to="/data-warga" className="hover:text-blue-400 transition-colors">Statistik Wilayah</Link></li>
+          <h3 className="text-white font-black mb-6 uppercase text-xs tracking-[0.2em]">Layanan Publik</h3>
+          <ul className="space-y-4 text-sm font-medium">
+            <li><Link to="/kepengurusan" className="hover:text-indigo-400 transition-colors">Profil Perangkat Desa</Link></li>
+            <li><Link to="/kegiatan" className="hover:text-indigo-400 transition-colors">Agenda Pembangunan</Link></li>
+            <li><Link to="/keuangan" className="hover:text-indigo-400 transition-colors">Transparansi Dana Desa</Link></li>
+            <li><Link to="/data-warga" className="hover:text-indigo-400 transition-colors">Data Demografi</Link></li>
           </ul>
         </div>
         <div>
-          <h3 className="text-white font-bold mb-4 uppercase text-xs tracking-widest">Kontak Resmi</h3>
-          <ul className="space-y-3 text-sm">
-            <li className="flex gap-3"><span className="material-symbols-outlined text-blue-500">location_on</span> Jl. Harmoni No. 01, RW 05</li>
-            <li className="flex gap-3"><span className="material-symbols-outlined text-blue-500">mail</span> sekretariat@harmoni.id</li>
-            <li className="flex gap-3"><span className="material-symbols-outlined text-blue-500">phone</span> +62 812 3456 7890</li>
+          <h3 className="text-white font-black mb-6 uppercase text-xs tracking-[0.2em]">Kontak Kantor</h3>
+          <ul className="space-y-4 text-sm">
+            <li className="flex gap-4 items-start"><span className="material-symbols-outlined text-indigo-500">location_on</span> Jl. Raya Desa Harmoni No. 01, Kec. Mandiri, Kab. Sejahtera</li>
+            <li className="flex gap-4 items-center"><span className="material-symbols-outlined text-indigo-500">mail</span> pemdes@harmoni.desa.id</li>
+            <li className="flex gap-4 items-center"><span className="material-symbols-outlined text-indigo-500">phone</span> (021) 888 999 123</li>
           </ul>
         </div>
       </div>
-      <div className="mt-16 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-        <p>&copy; 2024 SI-WARGA - Sistem Informasi Organisasi Warga Terpadu.</p>
+      <div className="mt-20 pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+        <p>&copy; 2024 PEMERINTAH DESA HARMONI - Hak Cipta Dilindungi.</p>
+        <p className="flex items-center gap-1">Didukung oleh <span className="text-indigo-500">SI-DESA DIGITAL PLATFORM</span></p>
       </div>
     </div>
   </footer>

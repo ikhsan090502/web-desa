@@ -1,6 +1,6 @@
 {
-  "name": "SI-WARGA: Sistem Informasi Organisasi Warga",
-  "description": "Platform digital komprehensif untuk transparansi informasi, pengelolaan data warga, kegiatan, dan keuangan organisasi warga dengan dukungan AI.",
+  "name": "SI-DESA: Sistem Informasi Desa Harmoni",
+  "description": "Platform digital resmi Pemerintah Desa untuk transparansi informasi, pengelolaan kependudukan, kegiatan pembangunan, dan keuangan desa.",
   "requestFramePermissions": [
     "camera"
   ]
