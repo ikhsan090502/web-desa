@@ -1,7 +1,16 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PublicHome: React.FC = () => {
+  const navigate = useNavigate();
+
+  const activitiesPreview = [
+    { id: 1, title: 'Pembangunan Drainase RT 02/05', date: '05 Nov 2024', cat: 'Pembangunan', img: 'https://picsum.photos/600/400?seed=build1' },
+    { id: 2, title: 'Pelatihan UMKM Desa Harmoni', date: '30 Okt 2024', cat: 'Pelatihan', img: 'https://picsum.photos/600/400?seed=train1' },
+    { id: 3, title: 'Posyandu Rutin Bulanan', date: '15 Okt 2024', cat: 'Kesehatan', img: 'https://picsum.photos/600/400?seed=health' },
+  ];
+
   return (
     <div className="space-y-24 pb-24">
       {/* Hero Section */}
@@ -17,14 +26,20 @@ const PublicHome: React.FC = () => {
                 Membangun Komunitas yang <span className="text-blue-600">Transparan</span> & Harmonis
               </h1>
               <p className="text-lg text-slate-600 max-w-xl leading-relaxed">
-                Akses informasi resmi, layanan persuratan mandiri, dan pantau perkembangan kegiatan wilayah Anda dengan mudah melalui satu platform terintegrasi.
+                Akses informasi resmi desa, pantau perkembangan kegiatan wilayah, dan lihat laporan pembangunan secara transparan.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button className="px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all">
-                  Ajukan Layanan
+                <button 
+                  onClick={() => navigate('/kegiatan')}
+                  className="px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+                >
+                  Lihat Kabar Desa
                 </button>
-                <button className="px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
-                  Lihat Berita Terbaru
+                <button 
+                  onClick={() => navigate('/keuangan')}
+                  className="px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all"
+                >
+                  Transparansi Dana
                 </button>
               </div>
             </div>
@@ -42,7 +57,7 @@ const PublicHome: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 font-bold uppercase">Kesejahteraan</p>
-                  <p className="font-extrabold text-slate-900">Program Warga Aktif</p>
+                  <p className="font-extrabold text-slate-900">Program Desa Aktif</p>
                 </div>
               </div>
             </div>
@@ -85,33 +100,39 @@ const PublicHome: React.FC = () => {
         </div>
       </section>
 
-      {/* News & Services Preview */}
+      {/* Kabar Desa Preview */}
       <section id="layanan" className="px-4">
         <div className="mx-auto max-w-7xl">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-extrabold text-slate-900">Layanan & Berita</h2>
-              <p className="text-slate-500 mt-2">Update terbaru dari lingkungan kita</p>
+              <h2 className="text-3xl font-extrabold text-slate-900">Kabar Desa Terbaru</h2>
+              <p className="text-slate-500 mt-2">Laporan kegiatan dan progres pembangunan terkini</p>
             </div>
-            <button className="text-blue-600 font-bold hover:underline">Lihat Semua</button>
+            <button 
+                onClick={() => navigate('/kegiatan')}
+                className="text-blue-600 font-bold hover:underline"
+            >
+                Lihat Semua Berita
+            </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="group cursor-pointer">
+            {activitiesPreview.map((act) => (
+              <div 
+                key={act.id} 
+                onClick={() => navigate(`/kegiatan/${act.id}`)}
+                className="group cursor-pointer"
+              >
                 <div className="aspect-[16/9] bg-slate-100 rounded-3xl overflow-hidden mb-4 relative shadow-md">
-                  <img src={`https://picsum.photos/600/400?seed=${i + 10}`} alt="News" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={act.img} alt={act.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-xl text-[10px] font-bold text-blue-600 uppercase">
-                    Kegiatan
+                    {act.cat}
                   </div>
                 </div>
                 <h4 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {i === 1 ? 'Kerja Bakti Rutin Akhir Bulan' : i === 2 ? 'Laporan Keuangan Kuartal III' : 'Posyandu dan Cek Kesehatan Gratis'}
+                  {act.title}
                 </h4>
-                <p className="text-sm text-slate-500 mt-2 line-clamp-2">
-                  Diharapkan partisipasi seluruh warga untuk menjaga kebersihan dan kesehatan lingkungan kita bersama demi kenyamanan...
-                </p>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-400">12 Okt 2024</span>
+                  <span className="text-xs font-bold text-slate-400">{act.date}</span>
                   <span className="material-symbols-outlined text-slate-400 group-hover:text-blue-600">arrow_right_alt</span>
                 </div>
               </div>

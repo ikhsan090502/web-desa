@@ -1,14 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const API_KEY = process.env.API_KEY;
-
 export const generateAssistantContent = async (prompt: string, context: string = "") => {
-  if (!API_KEY) {
-    throw new Error("API Key tidak dikonfigurasi.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  // Always use a new GoogleGenAI instance with process.env.API_KEY directly as per guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
 
   const systemInstruction = `
@@ -32,6 +27,7 @@ export const generateAssistantContent = async (prompt: string, context: string =
       },
     });
 
+    // Directly access the text property from GenerateContentResponse
     return response.text;
   } catch (error) {
     console.error("Gemini API Error:", error);

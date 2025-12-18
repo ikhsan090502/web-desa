@@ -1,146 +1,150 @@
 
 import React, { useState } from 'react';
-import { generateAssistantContent } from '../services/gemini';
 
 const AdminKegiatan: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [desc, setDesc] = useState('');
-  const [title, setTitle] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [activities, setActivities] = useState([
+    { 
+      id: 1, 
+      title: 'Pembangunan Drainase RT 02/05', 
+      date: '2024-11-05', 
+      loc: 'Dusun I - Jl. Melati', 
+      status: 'Rencana', 
+      budget: 'Rp 45.000.000', 
+      img: 'https://picsum.photos/600/400?seed=build1',
+      description: 'Kegiatan ini merupakan bagian dari program percepatan infrastruktur desa tahun 2024. Pembangunan drainase sepanjang 200 meter ini bertujuan untuk mencegah banjir saat musim hujan tiba.'
+    },
+    { 
+      id: 2, 
+      title: 'Pelatihan UMKM Desa Harmoni', 
+      date: '2024-10-30', 
+      loc: 'Aula Kantor Desa', 
+      status: 'Proses', 
+      budget: 'Rp 5.500.000', 
+      img: 'https://picsum.photos/600/400?seed=train1',
+      description: 'Pemerintah desa memfasilitasi 50 pelaku UMKM lokal untuk mendapatkan pelatihan pemasaran digital dan pengemasan produk yang lebih menarik.'
+    },
+  ]);
 
-  const handleGenerateDesc = async () => {
-    if (!title) return alert("Masukkan judul kegiatan terlebih dahulu.");
-    setIsGenerating(true);
-    try {
-      const prompt = `Buatkan deskripsi kegiatan yang rapi, informatif, dan sopan untuk pengumuman warga dengan judul: "${title}"`;
-      const result = await generateAssistantContent(prompt, "Manajemen Kegiatan Warga");
-      setDesc(result || '');
-    } catch (e) {
-      alert("Gagal memanggil AI.");
-    } finally {
-      setIsGenerating(false);
+  const [form, setForm] = useState({ title: '', date: '', loc: '', budget: '', status: 'Rencana', description: '' });
+
+  const handleEdit = (act: any) => {
+    setForm({ title: act.title, date: act.date, loc: act.loc, budget: act.budget, status: act.status, description: act.description || '' });
+    setEditingId(act.id);
+    setIsAdding(true);
+  };
+
+  const handleSave = () => {
+    if (editingId) {
+      setActivities(activities.map(a => a.id === editingId ? { ...a, ...form } : a));
+    } else {
+      setActivities([{ id: Date.now(), ...form, img: `https://picsum.photos/600/400?seed=${Date.now()}` }, ...activities]);
     }
+    setIsAdding(false);
+    setEditingId(null);
+    setForm({ title: '', date: '', loc: '', budget: '', status: 'Rencana', description: '' });
   };
 
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Manajemen Kegiatan</h1>
-          <p className="text-sm text-slate-500">Kelola agenda, dokumentasi, dan publikasi kegiatan warga.</p>
+          <h1 className="text-2xl font-black text-slate-900">Manajemen Kabar & Kegiatan</h1>
+          <p className="text-sm text-slate-500 font-medium">Input kegiatan di sini akan otomatis tampil sebagai berita di halaman publik.</p>
         </div>
-        <button 
-          onClick={() => setIsAdding(true)}
-          className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl text-sm flex items-center gap-2 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all"
-        >
-          <span className="material-symbols-outlined">add_circle</span> Tambah Kegiatan
-        </button>
+        {!isAdding && (
+          <button 
+            onClick={() => { setIsAdding(true); setEditingId(null); setForm({ title: '', date: '', loc: '', budget: '', status: 'Rencana', description: '' }); }}
+            className="px-6 py-3 bg-indigo-700 text-white font-bold rounded-2xl text-sm flex items-center gap-2 hover:bg-indigo-800 shadow-xl shadow-indigo-100 transition-all"
+          >
+            <span className="material-symbols-outlined">add_task</span> Input Kabar Desa Baru
+          </button>
+        )}
       </div>
 
       {isAdding && (
-        <div className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="flex justify-between items-center">
-            <h3 className="font-extrabold text-xl text-slate-900">Tambah Agenda Baru</h3>
-            <button onClick={() => setIsAdding(false)} className="text-slate-400 hover:text-red-500 transition-colors">
-              <span className="material-symbols-outlined">cancel</span>
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Judul Kegiatan</label>
-                <input 
-                  type="text" 
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-200 py-4 px-6 text-sm font-semibold"
-                  placeholder="Contoh: Kerja Bakti Massal RW 05"
-                />
+        <div className="bg-white rounded-[2.5rem] border-2 border-indigo-100 p-10 animate-in slide-in-from-top-4 duration-500 shadow-2xl">
+           <div className="flex justify-between items-center mb-8">
+              <h2 className="text-xl font-black">{editingId ? 'Edit Kabar Desa' : 'Tulis Kabar Desa Baru'}</h2>
+              <button onClick={() => setIsAdding(false)} className="text-slate-400 hover:text-red-500 transition-all"><span className="material-symbols-outlined">close</span></button>
+           </div>
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+              <div className="space-y-6">
+                 <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Judul Berita/Kegiatan</label>
+                    <input value={form.title} onChange={e => setForm({...form, title: e.target.value})} type="text" className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold" placeholder="Contoh: Peresmian Jembatan Desa..." />
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Tanggal</label>
+                      <input value={form.date} onChange={e => setForm({...form, date: e.target.value})} type="date" className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold" />
+                   </div>
+                   <div>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Status</label>
+                      <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold">
+                        <option>Rencana</option>
+                        <option>Proses</option>
+                        <option>Selesai</option>
+                      </select>
+                   </div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Lokasi</label>
+                        <input value={form.loc} onChange={e => setForm({...form, loc: e.target.value})} type="text" className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold" placeholder="Dusun/Wilayah" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Anggaran</label>
+                        <input value={form.budget} onChange={e => setForm({...form, budget: e.target.value})} type="text" className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold" placeholder="Rp..." />
+                    </div>
+                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Tanggal</label>
-                  <input type="date" className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-200 py-4 px-6 text-sm" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Kategori</label>
-                  <select className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-200 py-4 px-6 text-sm font-bold">
-                    <option>Sosial</option>
-                    <option>Infrastruktur</option>
-                    <option>Kesehatan</option>
-                    <option>Agama</option>
-                  </select>
-                </div>
+              <div className="space-y-6">
+                 <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Isi Berita / Laporan Lengkap</label>
+                    <textarea 
+                        rows={8}
+                        value={form.description} 
+                        onChange={e => setForm({...form, description: e.target.value})} 
+                        className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-medium leading-relaxed" 
+                        placeholder="Tuliskan detail kegiatan secara mendalam di sini..." 
+                    />
+                 </div>
+                 <div className="flex gap-4">
+                   <button onClick={() => setIsAdding(false)} className="flex-1 py-4 text-slate-400 font-black uppercase text-xs">Batal</button>
+                   <button onClick={handleSave} className="flex-1 py-4 bg-indigo-700 text-white font-black rounded-2xl shadow-xl hover:bg-indigo-800 transition-all">
+                     {editingId ? 'Update Kabar' : 'Simpan Kabar'}
+                   </button>
+                 </div>
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Upload Gambar/Dokumentasi</label>
-                <div className="border-2 border-dashed border-slate-200 rounded-[2rem] p-8 text-center bg-slate-50 group hover:border-blue-400 transition-colors cursor-pointer">
-                  <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-blue-500 mb-2">add_photo_alternate</span>
-                  <p className="text-xs font-bold text-slate-400">Klik untuk pilih gambar atau tarik ke sini</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-2 px-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Deskripsi Kegiatan</label>
-                <button 
-                  onClick={handleGenerateDesc}
-                  disabled={isGenerating}
-                  className="text-[10px] font-extrabold uppercase bg-blue-50 text-blue-600 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-blue-600 hover:text-white transition-all disabled:opacity-50"
-                >
-                  <span className="material-symbols-outlined text-sm">auto_awesome</span> 
-                  {isGenerating ? "Menyusun..." : "Bantu Tulis AI"}
-                </button>
-              </div>
-              <textarea 
-                rows={12}
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
-                className="flex-1 w-full bg-slate-50 border-none rounded-[2rem] focus:ring-2 focus:ring-blue-200 p-6 text-sm leading-relaxed"
-                placeholder="Tulis detail kegiatan di sini..."
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
-            <button onClick={() => setIsAdding(false)} className="px-8 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl text-sm hover:bg-slate-200 transition-all">
-              Batalkan
-            </button>
-            <button className="px-8 py-4 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all">
-              Simpan & Publikasikan
-            </button>
-          </div>
+           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden group">
-            <div className="aspect-video relative overflow-hidden">
-              <img src={`https://picsum.photos/600/400?seed=${i+20}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-4 right-4 flex gap-2">
-                <button className="h-8 w-8 rounded-full bg-white/90 backdrop-blur text-slate-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                  <span className="material-symbols-outlined text-sm">edit</span>
-                </button>
-                <button className="h-8 w-8 rounded-full bg-white/90 backdrop-blur text-red-500 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-sm">
-                  <span className="material-symbols-outlined text-sm">delete</span>
-                </button>
-              </div>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[9px] font-extrabold uppercase">Sosial</span>
-                <span className="text-[10px] font-bold text-slate-400 italic">Publik</span>
-              </div>
-              <h4 className="font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">Judul Kegiatan {i}</h4>
-              <p className="text-xs text-slate-500 mt-2 line-clamp-2 italic leading-relaxed">"Deskripsi kegiatan yang telah dipublikasikan kepada warga Desa Harmoni..."</p>
-              <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-                <span className="text-[10px] font-bold text-slate-400">20 Okt 2024</span>
-                <span className="material-symbols-outlined text-slate-300">visibility</span>
-              </div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {activities.map(act => (
+          <div key={act.id} className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm flex flex-col sm:flex-row group hover:shadow-xl transition-all duration-500">
+             <div className="sm:w-48 aspect-video sm:aspect-square shrink-0 relative overflow-hidden">
+               <img src={act.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+               <div className="absolute inset-0 bg-slate-900/20"></div>
+             </div>
+             <div className="p-8 flex-1 flex flex-col justify-between">
+                <div>
+                   <div className="flex justify-between items-start mb-2">
+                     <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase ${act.status === 'Selesai' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{act.status}</span>
+                     <span className="text-[10px] font-black text-indigo-600">{act.budget}</span>
+                   </div>
+                   <h3 className="text-xl font-black text-slate-900 leading-tight mb-2 line-clamp-1">{act.title}</h3>
+                   <p className="text-[11px] text-slate-500 line-clamp-2 mb-4 leading-relaxed">{act.description}</p>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+                  <span className="text-[10px] font-bold text-slate-400">{act.date}</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleEdit(act)} className="h-9 w-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-all"><span className="material-symbols-outlined text-sm">edit</span></button>
+                  </div>
+                </div>
+             </div>
           </div>
         ))}
       </div>

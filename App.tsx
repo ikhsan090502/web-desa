@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route, Link, useLocation, Navigate } from
 import PublicHome from './pages/PublicHome';
 import PublicKepengurusan from './pages/PublicKepengurusan';
 import PublicKegiatan from './pages/PublicKegiatan';
+import PublicKegiatanDetail from './pages/PublicKegiatanDetail'; // Import baru
 import PublicDataWarga from './pages/PublicDataWarga';
 import PublicKeuangan from './pages/PublicKeuangan';
 import AdminDashboard from './pages/AdminDashboard';
@@ -63,6 +64,7 @@ const AppLayout: React.FC<{ isAuthenticated: boolean; setIsAuthenticated: (val: 
           <Route path="/" element={<PublicHome />} />
           <Route path="/kepengurusan" element={<PublicKepengurusan />} />
           <Route path="/kegiatan" element={<PublicKegiatan />} />
+          <Route path="/kegiatan/:id" element={<PublicKegiatanDetail />} />
           <Route path="/data-warga" element={<PublicDataWarga />} />
           <Route path="/keuangan" element={<PublicKeuangan />} />
           <Route path="/admin/login" element={<AdminLogin onLogin={() => setIsAuthenticated(true)} />} />
@@ -94,7 +96,7 @@ const PublicNavigation: React.FC = () => (
       </nav>
       <div className="flex items-center gap-4">
         <Link 
-          to="/admin" 
+          to="/admin/login" 
           className="rounded-2xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white shadow-lg hover:bg-indigo-900 transition-all active:scale-95"
         >
           Portal Internal
@@ -116,20 +118,12 @@ const PublicFooter: React.FC = () => (
           <p className="text-slate-400 max-w-md text-lg leading-relaxed">
             Pusat informasi dan layanan digital terpadu Pemerintah Desa Harmoni. Mewujudkan tata kelola desa yang transparan, akuntabel, dan berbasis teknologi.
           </p>
-          <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-600 transition-colors cursor-pointer">
-              <span className="material-symbols-outlined text-sm">facebook</span>
-            </div>
-            <div className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-indigo-400 transition-colors cursor-pointer">
-              <span className="material-symbols-outlined text-sm">alternate_email</span>
-            </div>
-          </div>
         </div>
         <div>
           <h3 className="text-white font-black mb-6 uppercase text-xs tracking-[0.2em]">Layanan Publik</h3>
           <ul className="space-y-4 text-sm font-medium">
             <li><Link to="/kepengurusan" className="hover:text-indigo-400 transition-colors">Profil Perangkat Desa</Link></li>
-            <li><Link to="/kegiatan" className="hover:text-indigo-400 transition-colors">Agenda Pembangunan</Link></li>
+            <li><Link to="/kegiatan" className="hover:text-indigo-400 transition-colors">Kabar Desa</Link></li>
             <li><Link to="/keuangan" className="hover:text-indigo-400 transition-colors">Transparansi Dana Desa</Link></li>
             <li><Link to="/data-warga" className="hover:text-indigo-400 transition-colors">Data Demografi</Link></li>
           </ul>
@@ -139,13 +133,11 @@ const PublicFooter: React.FC = () => (
           <ul className="space-y-4 text-sm">
             <li className="flex gap-4 items-start"><span className="material-symbols-outlined text-indigo-500">location_on</span> Jl. Raya Desa Harmoni No. 01, Kec. Mandiri, Kab. Sejahtera</li>
             <li className="flex gap-4 items-center"><span className="material-symbols-outlined text-indigo-500">mail</span> pemdes@harmoni.desa.id</li>
-            <li className="flex gap-4 items-center"><span className="material-symbols-outlined text-indigo-500">phone</span> (021) 888 999 123</li>
           </ul>
         </div>
       </div>
       <div className="mt-20 pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
         <p>&copy; 2024 PEMERINTAH DESA HARMONI - Hak Cipta Dilindungi.</p>
-        <p className="flex items-center gap-1">Didukung oleh <span className="text-indigo-500">SI-DESA DIGITAL PLATFORM</span></p>
       </div>
     </div>
   </footer>
