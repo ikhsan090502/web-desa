@@ -1,15 +1,74 @@
+import React, { useState, useEffect } from 'react';
+import { fetchActivities, createKegiatan, deleteKegiatan } from '../services/api';
 
-import React, { useState } from 'react';
+interface Post {
+  id: number;
+  title: string;
+  category: string;
+  date: string;
+  status: string;
+  img: string;
+  content: string;
+}
 
 const AdminCMS: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [posts, setPosts] = useState([
-    /* Fixed: Changed property name 'cat' to 'category' to match form state and maintain internal consistency */
-    { id: 1, title: 'Penyaluran BLT Dana Desa Tahap III', category: 'Berita', date: '2024-10-25', status: 'Published', img: 'https://picsum.photos/400/250?seed=blt', content: '' },
-    { id: 2, title: 'Himbauan Kebersihan Lingkungan Dusun', category: 'Pengumuman', date: '2024-10-22', status: 'Draft', img: 'https://picsum.photos/400/250?seed=clean', content: '' },
-  ]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchActivities();
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   const [form, setForm] = useState({ title: '', content: '', category: 'Berita', img: '' });
+
+  const handleEdit = (post: Post) => {
+    setForm({ title: post.title, content: post.content || '', category: post.category || 'Berita', img: post.img });
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      const data = {
+        judul: form.title,
+        tanggal: new Date().toISOString().split('T')[0],
+        lokasi: 'Desa Banjarsari',
+        status: 'Published',
+        anggaran: 0,
+        foto_url: form.img || '', // No image uploaded yet
+        deskripsi: form.content
+      };
+      const result = await createKegiatan(data);
+      setPosts([{ id: result.id, title: form.title, category: form.category, date: data.tanggal, status: 'Published', img: data.foto_url, content: form.content }, ...posts]);
+      setIsEditing(false);
+      setForm({ title: '', content: '', category: 'Berita', img: '' });
+    } catch (error) {
+      console.error('Error saving post:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm('Apakah Anda yakin ingin menghapus konten ini?')) {
+      try {
+        await deleteKegiatan(id.toString());
+        setPosts(posts.filter(p => p.id !== id));
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      }
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="space-y-8">
@@ -19,7 +78,7 @@ const AdminCMS: React.FC = () => {
           <p className="text-sm text-slate-500 font-medium">Publikasikan kabar terbaru untuk seluruh warga desa.</p>
         </div>
         {!isEditing && (
-          <button 
+          <button
             onClick={() => setIsEditing(true)}
             className="px-6 py-3 bg-indigo-700 text-white font-bold rounded-2xl text-sm flex items-center gap-2 hover:bg-indigo-800 shadow-xl shadow-indigo-100"
           >
@@ -39,19 +98,15 @@ const AdminCMS: React.FC = () => {
              </div>
              <div className="flex gap-3">
                <button className="px-6 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black uppercase text-slate-500">Simpan Draf</button>
-               <button onClick={() => {
-                 /* Fixed: New post object now correctly matches the 'category' property name expected in the state, resolving line 42 error */
-                 setPosts([{ id: Date.now(), ...form, date: '2024-10-27', status: 'Published', img: 'https://picsum.photos/400/250?seed=new' }, ...posts]);
-                 setIsEditing(false);
-               }} className="px-8 py-2.5 bg-indigo-700 text-white rounded-xl text-xs font-black uppercase shadow-lg shadow-indigo-100">Publikasikan</button>
+               <button onClick={handleSave} className="px-8 py-2.5 bg-indigo-700 text-white rounded-xl text-xs font-black uppercase shadow-lg shadow-indigo-100">Publikasikan</button>
              </div>
           </div>
-          
+
           <div className="p-10 grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-8">
               <div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={form.title}
                   onChange={e => setForm({...form, title: e.target.value})}
                   placeholder="Masukkan Judul Artikel / Berita..."
@@ -59,7 +114,7 @@ const AdminCMS: React.FC = () => {
                 />
               </div>
               <div className="border-t pt-8">
-                <textarea 
+                <textarea
                   rows={15}
                   value={form.content}
                   onChange={e => setForm({...form, content: e.target.value})}
@@ -68,7 +123,7 @@ const AdminCMS: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-8 bg-slate-50 p-8 rounded-[2rem] h-fit border border-slate-100">
                <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Gambar Unggulan</label>
@@ -102,10 +157,15 @@ const AdminCMS: React.FC = () => {
           {posts.map(post => (
             <div key={post.id} className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm group hover:shadow-xl transition-all duration-500">
                <div className="aspect-video relative">
-                 <img src={post.img} className="w-full h-full object-cover" />
+                 {post.img ? (
+                   <img src={post.img} className="w-full h-full object-cover" />
+                 ) : (
+                   <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                     <span className="material-symbols-outlined text-4xl text-slate-400">image</span>
+                   </div>
+                 )}
                  <div className="absolute top-4 left-4">
-                   {/* Fixed: Updated property access to use 'category' instead of 'cat' */}
-                   <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-black uppercase text-indigo-700 shadow-sm">{post.category}</span>
+                   <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-black uppercase text-indigo-700 shadow-sm">{post.category || 'Berita'}</span>
                  </div>
                </div>
                <div className="p-8">
@@ -113,8 +173,8 @@ const AdminCMS: React.FC = () => {
                  <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
                    <span className="text-[10px] font-bold text-slate-400">{post.date}</span>
                    <div className="flex gap-2">
-                     <button className="h-9 w-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-indigo-600"><span className="material-symbols-outlined text-sm">edit</span></button>
-                     <button className="h-9 w-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-600"><span className="material-symbols-outlined text-sm">delete</span></button>
+                     <button onClick={() => handleEdit(post)} className="h-9 w-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-indigo-600"><span className="material-symbols-outlined text-sm">edit</span></button>
+                     <button onClick={() => handleDelete(post.id)} className="h-9 w-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-600"><span className="material-symbols-outlined text-sm">delete</span></button>
                    </div>
                  </div>
                </div>

@@ -2,8 +2,8 @@
 import React from 'react';
 
 const WhatsAppFAB: React.FC = () => {
-  const phoneNumber = "6281234567890"; // Ganti dengan nomor asli
-  const message = encodeURIComponent("Halo Admin SI-WARGA, saya ingin bertanya mengenai layanan warga...");
+  const phoneNumber = "628172849080"; // Ganti dengan nomor asli
+  const message = encodeURIComponent("Halo , saya ingin bertanya mengenai layanan warga...");
 
   return (
     <a

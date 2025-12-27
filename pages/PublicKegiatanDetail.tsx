@@ -1,16 +1,44 @@
-
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MOCK_ACTIVITIES } from './PublicKegiatan';
+import { fetchActivities } from '../services/api';
+
+interface Activity {
+  id: number;
+  title: string;
+  date: string;
+  loc: string;
+  status: string;
+  budget: string;
+  img: string;
+  description: string;
+  content: string;
+}
 
 const PublicKegiatanDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mencari data secara dinamis berdasarkan ID dari URL
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchActivities();
+        setActivities(data);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
   const activity = useMemo(() => {
-    return MOCK_ACTIVITIES.find(item => item.id === id);
-  }, [id]);
+    return activities.find(item => item.id.toString() === id);
+  }, [activities, id]);
+
+  if (loading) return <div>Loading...</div>;
 
   if (!activity) {
     return (
@@ -28,11 +56,11 @@ const PublicKegiatanDetail: React.FC = () => {
       {/* Header Navigation */}
       <div className="border-b border-slate-100 bg-slate-50/50 sticky top-20 z-40 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center">
-          <button 
+          <button
             onClick={() => navigate('/kegiatan')}
             className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-black uppercase text-[10px] tracking-widest transition-all"
           >
-            <span className="material-symbols-outlined text-sm">arrow_back</span> Kembali ke Kabar Desa
+            <span className="material-symbols-outlined text-sm">arrow_back</span> Kembali ke Kabar Rukun Tetangga
           </button>
         </div>
       </div>
@@ -51,7 +79,7 @@ const PublicKegiatanDetail: React.FC = () => {
           <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight mb-8">
             {activity.title}
           </h1>
-          
+
           {/* 2. INFORMASI METADATA */}
           <div className="flex flex-wrap items-center gap-8 py-8 border-y border-slate-100">
              <div className="flex items-center gap-3">
@@ -81,19 +109,19 @@ const PublicKegiatanDetail: React.FC = () => {
         {/* 3. FOTO UTAMA */}
         <div className="mb-12">
           <div className="aspect-video w-full rounded-[3rem] overflow-hidden shadow-2xl shadow-indigo-100/50 border-4 border-white ring-1 ring-slate-100">
-             <img 
-               src={activity.img} 
-               className="w-full h-full object-cover" 
-               alt={activity.title} 
+             <img
+               src={activity.img}
+               className="w-full h-full object-cover"
+               alt={activity.title}
              />
           </div>
-          <p className="text-center text-[10px] font-bold text-slate-400 mt-4 uppercase tracking-widest">Dokumentasi Kegiatan Desa Harmoni</p>
+          <p className="text-center text-[10px] font-bold text-slate-400 mt-4 uppercase tracking-widest">Dokumentasi Kegiatan Desa Banjarsari</p>
         </div>
 
         {/* 4. DESKRIPSI LENGKAP */}
         <div className="prose prose-lg max-w-none">
           <div className="text-slate-600 font-medium leading-[2] text-lg">
-            {activity.content.split('\n').map((para, i) => (
+            {(activity.content || activity.description || '').split('\n').map((para, i) => (
               para.trim() && <p key={i} className="mb-8">{para.trim()}</p>
             ))}
           </div>
@@ -108,9 +136,6 @@ const PublicKegiatanDetail: React.FC = () => {
            <div className="flex flex-col gap-3 w-full md:w-auto">
              <button className="px-10 py-4 bg-white text-indigo-900 font-black rounded-2xl shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-3">
                <span className="material-symbols-outlined">chat</span> Hubungi Admin
-             </button>
-             <button className="px-10 py-4 bg-white/10 border border-white/20 text-white font-black rounded-2xl hover:bg-white/20 transition-all text-xs uppercase tracking-widest">
-               Unduh Laporan PDF
              </button>
            </div>
         </div>

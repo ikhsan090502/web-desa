@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind v4: JANGAN pakai @apply untuk font global */
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background-color: #f9fafb; /* gray-50 */
+  color: #1f2937; /* gray-800 */
+}

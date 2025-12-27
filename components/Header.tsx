@@ -1,12 +1,25 @@
 
 import React from 'react';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between">
-      <div>
-        <h2 className="text-slate-900 font-bold">Dashboard Admin</h2>
-        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Selamat Datang, Pengurus Warga</p>
+    <header className="h-16 bg-white border-b border-slate-200 px-4 lg:px-8 flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        {/* Hamburger menu for mobile */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-all"
+        >
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <h2 className="text-slate-900 font-bold">Dashboard Admin</h2>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Selamat Datang, Pengurus Warga</p>
+        </div>
       </div>
       <div className="flex items-center gap-4">
         <button className="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-all">

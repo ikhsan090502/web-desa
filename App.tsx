@@ -79,20 +79,18 @@ const PublicNavigation: React.FC = () => (
   <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md">
     <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <Link to="/" className="flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-700 text-white shadow-xl shadow-indigo-200">
-          <span className="material-symbols-outlined text-3xl">account_balance</span>
-        </div>
+        <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-2xl shadow-xl shadow-indigo-200" />
         <div className="flex flex-col">
-          <h1 className="text-xl font-black leading-none text-slate-900 tracking-tight">SI-DESA</h1>
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">Pemerintah Desa Harmoni</span>
+          <h1 className="text-xl font-black leading-none text-slate-900 tracking-tight">RT 01 RW 21 Dukuhan Nayu</h1>
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">Pemerintah Desa Banjarsari</span>
         </div>
       </Link>
       <nav className="hidden lg:flex items-center gap-10">
         <Link to="/" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Beranda</Link>
-        <Link to="/kepengurusan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Perangkat Desa</Link>
-        <Link to="/kegiatan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Kabar Desa</Link>
+        <Link to="/kepengurusan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Pengurus Rukun Tetangga</Link>
+        <Link to="/kegiatan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Kabar Rukun Tetangga</Link>
         <Link to="/data-warga" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Statistik</Link>
-        <Link to="/keuangan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">APBD Desa</Link>
+        <Link to="/keuangan" className="text-sm font-bold text-slate-600 hover:text-indigo-700 transition-colors">Kas Rukun Tetangga</Link>
       </nav>
       <div className="flex items-center gap-4">
         <Link 
@@ -112,19 +110,19 @@ const PublicFooter: React.FC = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
         <div className="col-span-1 md:col-span-2 space-y-8">
           <div className="flex items-center gap-3 text-white">
-            <span className="material-symbols-outlined text-indigo-500 text-4xl">account_balance</span>
-            <span className="text-3xl font-black tracking-tighter">SI-DESA</span>
+            <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-2xl" />
+            <span className="text-3xl font-black tracking-tighter">RT 01 RW 21 Dukuhan Nayu</span>
           </div>
           <p className="text-slate-400 max-w-md text-lg leading-relaxed">
-            Pusat informasi dan layanan digital terpadu Pemerintah Desa Harmoni. Mewujudkan tata kelola desa yang transparan, akuntabel, dan berbasis teknologi.
+            Pusat informasi dan layanan digital terpadu Rukun Tetangga 01 di Dukuhan Nayu. Mewujudkan tata kelola yang transparan, akuntabel, dan berbasis teknologi.
           </p>
         </div>
         <div>
           <h3 className="text-white font-black mb-6 uppercase text-xs tracking-[0.2em]">Layanan Publik</h3>
           <ul className="space-y-4 text-sm font-medium">
-            <li><Link to="/kepengurusan" className="hover:text-indigo-400 transition-colors">Profil Perangkat Desa</Link></li>
-            <li><Link to="/kegiatan" className="hover:text-indigo-400 transition-colors">Kabar Desa</Link></li>
-            <li><Link to="/keuangan" className="hover:text-indigo-400 transition-colors">Transparansi Dana Desa</Link></li>
+            <li><Link to="/kepengurusan" className="hover:text-indigo-400 transition-colors">Profil Pengurus Rukun Tetangga</Link></li>
+            <li><Link to="/kegiatan" className="hover:text-indigo-400 transition-colors">Kabar Rukun Tetangga</Link></li>
+            <li><Link to="/keuangan" className="hover:text-indigo-400 transition-colors">Transparansi Kas Rukun Tetangga</Link></li>
             <li><Link to="/data-warga" className="hover:text-indigo-400 transition-colors">Data Demografi</Link></li>
           </ul>
         </div>
@@ -137,7 +135,7 @@ const PublicFooter: React.FC = () => (
         </div>
       </div>
       <div className="mt-20 pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-        <p>&copy; 2024 PEMERINTAH DESA HARMONI - Hak Cipta Dilindungi.</p>
+        <p>&copy; 2025 Dahayu - Hak Cipta Dilindungi.</p>
       </div>
     </div>
   </footer>
