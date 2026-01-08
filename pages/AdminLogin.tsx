@@ -1,23 +1,62 @@
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+const API_BASE = '/api'
+
+type LoginResponse =
+  | { success: true; token?: string; user?: any }
+  | { success: false; error?: string }
 
 const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulasi login sederhana
-    if (username === 'admin' && password === 'warga123') {
-      onLogin();
-      navigate('/admin');
-    } else {
-      setError('Username atau Password salah. (Gunakan admin/warga123)');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const resp = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username.trim(),
+          password,
+        }),
+      })
+
+      // ✅ aman: kalau bukan json, tidak crash
+      let json: LoginResponse | null = null
+      try {
+        json = (await resp.json()) as LoginResponse
+      } catch {
+        json = null
+      }
+
+      if (!resp.ok || !json || json.success === false) {
+        const msg =
+          (json && 'error' in json && json.error) ||
+          `Gagal login (HTTP ${resp.status}).`
+        setError(msg || 'Username atau password salah.')
+        return
+      }
+
+      // simpan token kalau ada
+      const token = (json as any)?.token
+      if (token) localStorage.setItem('admin_token', token)
+
+      onLogin()
+      navigate('/admin')
+    } catch (err: any) {
+      setError(err?.message || 'Gagal login. Coba lagi.')
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
@@ -37,42 +76,56 @@ const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 <span className="material-symbols-outlined text-sm">error</span> {error}
               </div>
             )}
+
             <div>
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Username</label>
-              <input 
-                type="text" 
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">
+                Username
+              </label>
+              <input
+                type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-200 py-4 px-6 text-sm font-semibold"
                 placeholder="Masukkan username..."
+                autoComplete="username"
               />
             </div>
+
             <div>
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">Password</label>
-              <input 
-                type="password" 
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2 px-1">
+                Password
+              </label>
+              <input
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-200 py-4 px-6 text-sm font-semibold"
                 placeholder="Masukkan password..."
+                autoComplete="current-password"
               />
             </div>
-            <button 
+
+            <button
               type="submit"
-              className="w-full py-4 bg-blue-600 text-white font-extrabold rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95"
+              disabled={loading}
+              className="w-full py-4 bg-blue-600 text-white font-extrabold rounded-2xl shadow-xl shadow-blue-100 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              Masuk Sekarang
+              {loading ? 'Memproses...' : 'Masuk Sekarang'}
             </button>
           </form>
+
           <div className="mt-10 text-center">
-            <button onClick={() => navigate('/')} className="text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors">
+            <button
+              onClick={() => navigate('/')}
+              className="text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors"
+            >
               Kembali ke Portal Publik
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLogin;
+export default AdminLogin

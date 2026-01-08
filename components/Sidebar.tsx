@@ -14,7 +14,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen = false, onClose }) 
     { icon: 'groups', label: 'Data Warga', path: '/admin/residents' },
     { icon: 'account_tree', label: 'Kelola Pengurus', path: '/admin/organization' },
     { icon: 'event_available', label: 'Manajemen Kegiatan', path: '/admin/kegiatan' },
-    { icon: 'newspaper', label: 'Kelola Konten', path: '/admin/cms' },
     { icon: 'account_balance_wallet', label: 'Keuangan', path: '/admin/finances' },
   ];
 
